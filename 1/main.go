@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"math"
 	"os"
 	"slices"
 	"strconv"
@@ -32,18 +31,18 @@ func main() {
 		right = append(right, trimmed[1])
 	}
 
-	slices.Sort(left)
-	slices.Sort(right)
-
 	sum := 0
 
 	for i := 0; i < len(left); i++ {
-		leftInt, _ := strconv.Atoi(left[i])
-		rightInt, _ := strconv.Atoi(right[i])
-
-		sum += int(math.Abs(float64(leftInt - rightInt)))
+		if slices.Contains(right, left[i]) {
+			for _, v := range right {
+				if v == left[i] {
+					vInt, _ := strconv.Atoi(v)
+					sum += vInt
+				}
+			}
+		}
 	}
 
 	fmt.Println(sum)
-
 }
