@@ -6,7 +6,6 @@ import (
 	"log"
 	"math"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -21,58 +20,66 @@ func main() {
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
-
-	data := make([][]float64, 0)
+	data := make(map[int][]float64, 0)
+	i := 0
 	for scanner.Scan() {
-		trimmed := strings.ReplaceAll(scanner.Text(), " ", ",")
-		split := strings.Split(trimmed, ",")
-
-		intLine := make([]float64, 0)
-		for _, v := range split {
+		line := strings.Fields(scanner.Text())
+		nums := make([]float64, len(line))
+		for j, v := range line {
 			num, err := strconv.Atoi(v)
 			if err != nil {
 				log.Fatal(err)
 			}
-			intLine = append(intLine, float64(num))
+			nums[j] = float64(num)
 		}
-
-		data = append(data, intLine)
+		data[i] = nums
+		i++
 	}
 
 	fmt.Println(data)
 
 	safeCount := 0
-	for _, line := range data {
-		valid := true
 
-		if !isSorted(line) {
-			continue
+	for i, line := range data {
+		if isSafe(line) {
+			safeCount++
+			delete(data, i)
 		}
+	}
 
-		for i := 0; i < len(line)-1; i++ {
-
-			diff := math.Abs(line[i] - line[i+1])
-
-			if diff > 3 || diff < 1 {
-				valid = false
+	for _, line := range data {
+		for j := 0; j < len(line); j++ {
+			stripped := append([]float64{}, line[:j]...)
+			stripped = append(stripped, line[j+1:]...)
+			if isSafe(stripped) {
+				safeCount++
 				break
 			}
-		}
-
-		if valid {
-			safeCount++
 		}
 	}
 
 	fmt.Println(safeCount)
 }
 
-func isSorted(line []float64) bool {
-	if slices.IsSorted(line) {
-		fmt.Println(line)
-		return true
+func isSafe(line []float64) bool {
+	increasing := true
+	decreasing := true
+
+	for i := 0; i < len(line)-1; i++ {
+
+		diff := math.Abs(line[i+1] - line[i])
+		if diff < 1 || diff > 3 {
+			return false
+		}
+
+		if line[i] < line[i+1] {
+			decreasing = false
+		}
+
+		if line[i] > line[i+1] {
+			increasing = false
+		}
 	}
 
-	slices.Reverse(line)
-	return slices.IsSorted(line)
+	return increasing || decreasing
 }
