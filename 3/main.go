@@ -19,10 +19,12 @@ func main() {
 	scanner := bufio.NewScanner(f)
 
 	sum := 0
+	mulsString := ""
 	for scanner.Scan() {
-		muls := extractMuls(scanner.Text())
-		sum += splitAndMultiPlyMuls(muls)
+		mulsString += scanner.Text()
 	}
+	muls := extractMuls(mulsString)
+	sum += splitAndMultiPlyMuls(muls)
 
 	fmt.Println(sum)
 }
@@ -30,7 +32,18 @@ func main() {
 func extractMuls(line string) []string {
 	muls := make([]string, 0)
 	toAdd := ""
+	enabled := true
 	for i, v := range line {
+		if i+4 < len(line) && string(line[i:i+4]) == "do()" {
+			enabled = true
+		} else if i+7 < len(line) && string(line[i:i+7]) == "don't()" {
+			enabled = false
+		}
+
+		if !enabled {
+			continue
+		}
+
 		if i > 3 && v == '(' && line[i-3:i] == "mul" && toAdd == "" {
 			toAdd = string(line[i])
 			continue
@@ -38,6 +51,7 @@ func extractMuls(line string) []string {
 			toAdd += string(v)
 		} else if string(v) == ")" && toAdd != "" {
 			toAdd += string(v)
+			fmt.Println(toAdd)
 			muls = append(muls, toAdd[1:len(toAdd)-1])
 			toAdd = ""
 		} else {
