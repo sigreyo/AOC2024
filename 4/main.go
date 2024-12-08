@@ -25,85 +25,102 @@ func main() {
 	// count += findNormalAndBackwardsXMAS(matrix)
 	// count += findHorizontalXMAS(matrix)
 	// count += findDiagonalXMAS(matrix)
-	count := diamondSearch(matrix)
+	count := findExMAS(matrix)
 
 	fmt.Println(count)
 }
 
-func diamondSearch(matrix []string) int {
+func findExMAS(matrix []string) int {
 	count := 0
 	for matrixIndex, line := range matrix {
 		for i := range line {
-			if string(line[i]) == "X" {
+			if i-1 >= 0 && matrixIndex-1 >= 0 && i+1 < len(line) && matrixIndex+1 < len(matrix) && string(line[i]) == "A" {
+				wordOne := string(matrix[matrixIndex-1][i-1]) + string(matrix[matrixIndex][i]) + string(matrix[matrixIndex+1][i+1])
+				wordTwo := string(matrix[matrixIndex+1][i-1]) + string(matrix[matrixIndex][i]) + string(matrix[matrixIndex-1][i+1])
 
-				//normal and backwards
-				if i+3 < len(line) {
-					word := string(line[i+1]) + string(line[i+2]) + string(line[i+3])
-					if word == "MAS" {
-						count++
-					}
-				}
-				if i-3 >= 0 {
-					word := string(line[i-1]) + string(line[i-2]) + string(line[i-3])
-					if word == "MAS" {
-						count++
-					}
-				}
-
-				//down
-				if matrixIndex+3 < len(matrix) {
-					word := string(matrix[matrixIndex+1][i]) + string(matrix[matrixIndex+2][i]) + string(matrix[matrixIndex+3][i])
-					if word == "MAS" {
-						count++
-					}
-				}
-
-				//up
-				if matrixIndex-3 >= 0 {
-					word := string(matrix[matrixIndex-1][i]) + string(matrix[matrixIndex-2][i]) + string(matrix[matrixIndex-3][i])
-					if word == "MAS" {
-						count++
-					}
-				}
-
-				//down right
-				if matrixIndex+3 < len(matrix) && i+3 < len(line) {
-					word := string(matrix[matrixIndex+1][i+1]) + string(matrix[matrixIndex+2][i+2]) + string(matrix[matrixIndex+3][i+3])
-					if word == "MAS" {
-						count++
-					}
-				}
-
-				//down left
-				if matrixIndex+3 < len(matrix) && i-3 >= 0 {
-					word := string(matrix[matrixIndex+1][i-1]) + string(matrix[matrixIndex+2][i-2]) + string(matrix[matrixIndex+3][i-3])
-					if word == "MAS" {
-						count++
-					}
-				}
-
-				//up right
-				if matrixIndex-3 >= 0 && i+3 < len(line) {
-					word := string(matrix[matrixIndex-1][i+1]) + string(matrix[matrixIndex-2][i+2]) + string(matrix[matrixIndex-3][i+3])
-					if word == "MAS" {
-						count++
-					}
-				}
-
-				//up left
-				if matrixIndex-3 >= 0 && i-3 >= 0 {
-					word := string(matrix[matrixIndex-1][i-1]) + string(matrix[matrixIndex-2][i-2]) + string(matrix[matrixIndex-3][i-3])
-					if word == "MAS" {
-						count++
-					}
-
+				if (wordOne == "MAS" || wordOne == "SAM") && (wordTwo == "MAS" || wordTwo == "SAM") {
+					count++
 				}
 			}
 		}
 	}
-
 	return count
 }
+
+// func diamondSearch(matrix []string) int {
+// 	count := 0
+// 	for matrixIndex, line := range matrix {
+// 		for i := range line {
+// 			if string(line[i]) == "X" {
+
+// 				//normal and backwards
+// 				if i+3 < len(line) {
+// 					word := string(line[i+1]) + string(line[i+2]) + string(line[i+3])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+// 				if i-3 >= 0 {
+// 					word := string(line[i-1]) + string(line[i-2]) + string(line[i-3])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+
+// 				//down
+// 				if matrixIndex+3 < len(matrix) {
+// 					word := string(matrix[matrixIndex+1][i]) + string(matrix[matrixIndex+2][i]) + string(matrix[matrixIndex+3][i])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+
+// 				//up
+// 				if matrixIndex-3 >= 0 {
+// 					word := string(matrix[matrixIndex-1][i]) + string(matrix[matrixIndex-2][i]) + string(matrix[matrixIndex-3][i])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+
+// 				//down right
+// 				if matrixIndex+3 < len(matrix) && i+3 < len(line) {
+// 					word := string(matrix[matrixIndex+1][i+1]) + string(matrix[matrixIndex+2][i+2]) + string(matrix[matrixIndex+3][i+3])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+
+// 				//down left
+// 				if matrixIndex+3 < len(matrix) && i-3 >= 0 {
+// 					word := string(matrix[matrixIndex+1][i-1]) + string(matrix[matrixIndex+2][i-2]) + string(matrix[matrixIndex+3][i-3])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+
+// 				//up right
+// 				if matrixIndex-3 >= 0 && i+3 < len(line) {
+// 					word := string(matrix[matrixIndex-1][i+1]) + string(matrix[matrixIndex-2][i+2]) + string(matrix[matrixIndex-3][i+3])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+// 				}
+
+// 				//up left
+// 				if matrixIndex-3 >= 0 && i-3 >= 0 {
+// 					word := string(matrix[matrixIndex-1][i-1]) + string(matrix[matrixIndex-2][i-2]) + string(matrix[matrixIndex-3][i-3])
+// 					if word == "MAS" {
+// 						count++
+// 					}
+
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return count
+// }
 
 // func findNormalAndBackwardsXMAS(matrix []string) int {
 // 	count := 0
